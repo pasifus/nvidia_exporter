@@ -6,6 +6,8 @@ from prometheus_client import MetricsHandler
 
 from .metrics_builder import build_metrics
 
+from BaseHTTPServer import HTTPServer
+
 def main():
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 9200
 

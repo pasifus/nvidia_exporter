@@ -1,2 +1,4 @@
 nose
 sphinx
+prometheus-client
+nvidia-ml-py

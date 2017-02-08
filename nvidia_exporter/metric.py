@@ -14,8 +14,15 @@ class Metric(object):
     @property
     def promethus_metric(self):
         # TODO: support non-gague metrics
-        if not self._prometheus_metric:
-            self._prometheus_metric = Gauge('nvidia_' + self.name, self.description, [DEVICE_INDEX_LABEL, DEVICE_NAME_LABEL, DRIVER_VERSION_LABEL])
+        try:
+            if not self._prometheus_metric:
+                self._prometheus_metric = Gauge('nvidia_' + self.name, self.description, [DEVICE_INDEX_LABEL, DEVICE_NAME_LABEL, DRIVER_VERSION_LABEL])
+        except AttributeError:
+            self._prometheus_metric = Gauge('nvidia_' + self.name, self.description,
+                                            [DEVICE_INDEX_LABEL, DEVICE_NAME_LABEL, DRIVER_VERSION_LABEL])
+
+        #print('nvidia_' + self.name, self.description,
+        #                                    [DEVICE_INDEX_LABEL, DEVICE_NAME_LABEL, DRIVER_VERSION_LABEL])
         return self._prometheus_metric
 
 class TemperatureMetric(Metric):
@@ -71,7 +78,7 @@ class FanSpeedMetric(Metric):
         self.name = 'fan_speed'
         self.description = 'Fan speed as a percent of the maximum, assuming the fan is not physically blocked'
 
-    def collect(self):
+    def collect(self, handle):
         try:
             return nvmlDeviceGetFanSpeed(handle)
         except NVMLError, nvmlError:
@@ -133,4 +140,8 @@ class ProcessCountMetric(Metric):
         self.description = 'Number of running compute processes'
 
     def collect(self, handle):
-        return nvmlDeviceGetComputeRunningProcesses(handle)
+	arr = nvmlDeviceGetComputeRunningProcesses(handle)
+	sum = 0
+	for i in range(len(arr)):
+	    sum = sum + arr[i].usedGpuMemory
+	return sum

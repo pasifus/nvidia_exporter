@@ -9,7 +9,7 @@ def build_metrics():
         TotalMemoryMetric(), FreeMemoryMetric(), UsedMemoryMetric(),
         GPUUtilizationMetric(), MemoryUtilizationMetric(),
         PowerUsageMetric(), PowerManagementLimitMetric(),
-        ECCDoubleBitErrorsMetric(), ECCSingleBitErrorsMetric(),
+        #ECCDoubleBitErrorsMetric(), ECCSingleBitErrorsMetric(),
         ProcessCountMetric()
     ]
 
@@ -22,6 +22,23 @@ def build_metrics():
     for device_index in range(device_count):
         handle = nvmlDeviceGetHandleByIndex(device_index)
         name = nvmlDeviceGetName(handle)
+	
+	metrics[0].promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metrics[0].collect(handle))
+	metrics[1].promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metrics[1].collect(handle))
+	metrics[2].promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metrics[2].collect(handle))
+	metrics[3].promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metrics[3].collect(handle))
+	metrics[4].promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metrics[4].collect(handle))
+	metrics[5].promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metrics[5].collect(handle))
+	metrics[6].promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metrics[6].collect(handle))
+	metrics[7].promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metrics[7].collect(handle))
+	metrics[8].promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metrics[8].collect(handle))
+	metrics[9].promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metrics[9].collect(handle))
+	metrics[10].promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metrics[10].collect(handle))
+	metrics[11].promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metrics[11].collect(handle))
+#	metrics[12].promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metrics[12].collect(handle))
+#	metrics[13].promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metrics[13].collect(handle))
 
-        for metric in metrics:
-            metric.promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metric.collect(handle))
+#	ITS FACKING NOT WORK WITH FOR!!!!!
+#        for metric in metrics:
+#            metric.promethus_metric.labels(device_index, name, driver_version).set_function(lambda: metric.collect(handle))
+
